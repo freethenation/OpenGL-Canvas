@@ -32,12 +32,13 @@
 ehthumbs.db
 Icon?
 Thumbs.db
+*.suo
 
 # Build Folders #
 #################
-bin/Debug
-bin/Release
-obj/Debug
-obj/Release
+/bin/Debug
+/bin/Release
+/obj/Debug
+/obj/Release
 
 
