@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2CCE7FBA-687F-4307-AAF3-1D52F42500D9}</ProjectGuid>
+    <ProjectGuid>{3510CD73-4679-4158-ABA8-61BA5F4D6267}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JollyBit.Canvas</RootNamespace>
