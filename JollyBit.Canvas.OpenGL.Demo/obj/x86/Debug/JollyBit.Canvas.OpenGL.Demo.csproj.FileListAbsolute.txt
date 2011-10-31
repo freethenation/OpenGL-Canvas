@@ -1,5 +1,0 @@
-D:\projects\OpenGL-Canvas\JollyBit.Canvas.OpenGL.Demo\bin\Debug\JollyBit.Canvas.OpenGL.Demo.exe
-D:\projects\OpenGL-Canvas\JollyBit.Canvas.OpenGL.Demo\bin\Debug\JollyBit.Canvas.OpenGL.Demo.pdb
-D:\projects\OpenGL-Canvas\JollyBit.Canvas.OpenGL.Demo\obj\x86\Debug\ResolveAssemblyReference.cache
-D:\projects\OpenGL-Canvas\JollyBit.Canvas.OpenGL.Demo\obj\x86\Debug\JollyBit.Canvas.OpenGL.Demo.exe
-D:\projects\OpenGL-Canvas\JollyBit.Canvas.OpenGL.Demo\obj\x86\Debug\JollyBit.Canvas.OpenGL.Demo.pdb
