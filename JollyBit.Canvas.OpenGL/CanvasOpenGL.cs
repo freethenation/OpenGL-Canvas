@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using JollyBit.Canvas;
 
-namespace JollyBit.TDS.Rendering.HTMLCanvas
+namespace JollyBit.Canvas.OpenGL
 {
 	class CanvasOpenGL : Canvas
 	{
