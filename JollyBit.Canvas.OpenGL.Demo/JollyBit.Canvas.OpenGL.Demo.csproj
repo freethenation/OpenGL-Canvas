@@ -44,6 +44,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JollyBit.Canvas.OpenGL\JollyBit.Canvas.OpenGL.csproj">
+      <Project>{0B6E0610-89B7-41E5-82BB-E7CEA6722935}</Project>
+      <Name>JollyBit.Canvas.OpenGL</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

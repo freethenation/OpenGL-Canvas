@@ -39,7 +39,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CanvasOpenGL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JollyBit.Canvas\JollyBit.Canvas.csproj">
+      <Project>{3510CD73-4679-4158-ABA8-61BA5F4D6267}</Project>
+      <Name>JollyBit.Canvas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\opentk\Source\OpenTK\OpenTK.csproj">
+      <Project>{A37A7E14-0000-0000-0000-000000000000}</Project>
+      <Name>OpenTK</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
