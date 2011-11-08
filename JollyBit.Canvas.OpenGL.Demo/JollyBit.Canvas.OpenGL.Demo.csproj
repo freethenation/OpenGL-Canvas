@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -48,6 +49,14 @@
     <ProjectReference Include="..\JollyBit.Canvas.OpenGL\JollyBit.Canvas.OpenGL.csproj">
       <Project>{0B6E0610-89B7-41E5-82BB-E7CEA6722935}</Project>
       <Name>JollyBit.Canvas.OpenGL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JollyBit.Canvas\JollyBit.Canvas.csproj">
+      <Project>{3510CD73-4679-4158-ABA8-61BA5F4D6267}</Project>
+      <Name>JollyBit.Canvas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\opentk\Source\OpenTK\OpenTK.csproj">
+      <Project>{A37A7E14-0000-0000-0000-000000000000}</Project>
+      <Name>OpenTK</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

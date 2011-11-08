@@ -6,39 +6,41 @@ using OpenTK;
 
 namespace JollyBit.Canvas
 {
-	public interface ISubpath : IEnumerable<Vector2> { }
-
-	public class RectSubpath : ISubpath
+	public interface ISubpath : IEnumerable<Vector2>
 	{
-		public readonly Vector2 TopLeft;
-		public readonly Vector2 BottomLeft;
-		public readonly Vector2 BorromRight;
-		public readonly Vector2 TopRight;
-		public RectSubpath(float x, float y, float width, float height, ref Matrix4 transform)
+		bool IsClosed { get; }
+	}
+
+	public static class SubpathExtensions
+	{
+		public static IEnumerable<Vector2> CloseSubpath(this ISubpath subpath)
 		{
-			Vector3 tmp = new Vector3(x, y, 0); ;
-			Vector3.Transform(ref tmp, ref transform, out tmp);
-			TopLeft = tmp.Xy;
-
-			tmp = new Vector3(x, y + height, 0); ;
-			Vector3.Transform(ref tmp, ref transform, out tmp);
-			BottomLeft = tmp.Xy;
-
-			tmp = new Vector3(x + width, y + height, 0); ;
-			Vector3.Transform(ref tmp, ref transform, out tmp);
-			BorromRight = tmp.Xy;
-
-			tmp = new Vector3(x + width, y, 0); ;
-			Vector3.Transform(ref tmp, ref transform, out tmp);
-			TopRight = tmp.Xy;
+			foreach (var point in subpath) yield return point;
+			Vector2 finalVector = subpath.FirstOrDefault();
+			if (finalVector != null) yield return finalVector;
 		}
+	}
+
+	public class Subpath : ISubpath
+	{
+		private readonly IEnumerable<Vector2> _vectors;
+		private readonly bool _isClosed;
+		public Subpath(IEnumerable<Vector2> vectors, bool isClose)
+		{
+			_vectors = vectors;
+			_isClosed = isClose;
+		}
+
+		public bool IsClosed
+		{
+			get { return _isClosed; }
+		}
+
 		public IEnumerator<Vector2> GetEnumerator()
 		{
-			yield return TopLeft;
-			yield return BottomLeft;
-			yield return BorromRight;
-			yield return TopRight;
+			return _vectors.GetEnumerator();
 		}
+
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();

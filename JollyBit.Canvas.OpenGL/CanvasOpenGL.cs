@@ -8,12 +8,12 @@ using JollyBit.Canvas;
 
 namespace JollyBit.Canvas.OpenGL
 {
-	class CanvasOpenGL : Canvas
+	public class CanvasOpenGL : Canvas
 	{
 		private Matrix4 _projMatrix;
 		public CanvasOpenGL()
 		{
-			_projMatrix = Matrix4.CreateOrthographicOffCenter(0, 1, 1, 0, -1, 1);
+			_projMatrix = Matrix4.CreateOrthographicOffCenter(0, 400, 400, 0, -1, 1);
 		}
 
 		public override void BeginBatch()
@@ -58,15 +58,33 @@ namespace JollyBit.Canvas.OpenGL
 			GL.Color3(1, 1, 1);
 		}
 
-		protected override void fillConvexPolygon(IEnumerable<Vector3> points)
+		public override void Stroke()
+		{
+			base.Stroke();
+			foreach (ISubpath subpath in _subPaths)
+			{
+				callInBatch(() =>
+				{
+					GL.Color3(.5, .5f, .5f);
+					GL.Begin(BeginMode.LineStrip);
+					foreach (Vector2 point in subpath.CloseSubpath())
+					{
+						GL.Vertex2(point);
+					}
+					GL.End();
+				});
+			}
+		}
+
+		protected override void fillConvexPolygon(IEnumerable<Vector2> points)
 		{
 			callInBatch(() =>
 			{
 				applyFillStyle();
 				GL.Begin(BeginMode.Polygon);
-				foreach (Vector3 point in points)
+				foreach (Vector2 point in points)
 				{
-					GL.Vertex3(point);
+					GL.Vertex2(point);
 				}
 				GL.End();
 			});
