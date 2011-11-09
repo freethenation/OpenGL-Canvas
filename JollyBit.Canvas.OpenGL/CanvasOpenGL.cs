@@ -67,7 +67,7 @@ namespace JollyBit.Canvas.OpenGL
 				{
 					GL.Color3(.5, .5f, .5f);
 					GL.Begin(BeginMode.LineStrip);
-					foreach (Vector2 point in subpath.CloseSubpath())
+					foreach (Vector2 point in subpath)
 					{
 						GL.Vertex2(point);
 					}

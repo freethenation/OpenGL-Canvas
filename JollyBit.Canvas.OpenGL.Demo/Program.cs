@@ -111,7 +111,13 @@ namespace JollyBit.Canvas.OpenGL.Demo
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 			canvas.LineWidth = 10;
 			canvas.BeginBatch();
+			canvas.BeginPath();
+			//Test 1			
 			canvas.Rect(200, 200, 50, 50);
+			//Test 2
+			canvas.MoveTo(200, 200);
+			canvas.LineTo(250, 250);
+			canvas.LineTo(100, 200);
 			canvas.Stroke();
 			canvas.EndBatch();
 

@@ -86,43 +86,125 @@ namespace JollyBit.Canvas
 		public float MiterLimit { get; set; }
 		#endregion
 
-		public void Rect(float x, float y, float w, float h)
+		#region Paths
+		public void BeginPath()
 		{
-			_subPaths.Add(new Rect(x, y, w, h, _tranMatrix));
+			_subPaths.Clear();
+		}
+		public void MoveTo(float x, float y)
+		{
+			ComplexSubpath subpath = new ComplexSubpath(new Vector2(x, y).ApplyTransform(ref _tranMatrix));
+			_subPaths.Add(subpath);
 		}
 
-		protected virtual void strokeLineSegment(LineSegment segment1, LineSegment segment2, LineJoinStyle joinStyle)
+		/// <summary>
+		/// Ensures their is a subpath and returns the subpath if found. If the subpath is not found a new subpath is added to _subpaths and null is returned.
+		/// Consult http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#ensure-there-is-a-subpath for more info.
+		/// </summary>
+		protected ComplexSubpath ensureComplexSubpath(float x, float y)
+		{
+			if (lastSubpath == null || lastSubpath.IsClosed)
+			{
+				MoveTo(x, y);
+				return null;
+			}
+			if (!(lastSubpath is ComplexSubpath))
+			{
+				lastSubpath = new ComplexSubpath(lastSubpath);
+			}
+			return lastSubpath as ComplexSubpath;
+		}
+		public void LineTo(float x, float y)
+		{
+			ComplexSubpath subpath = ensureComplexSubpath(x, y);
+			if (subpath == null) return;
+			subpath.LineTo(new Vector2(x, y).ApplyTransform(ref _tranMatrix));		
+		}
+		protected ISubpath lastSubpath
+		{
+			get
+			{
+				if (_subPaths.Count == 0) return null;
+				return _subPaths[_subPaths.Count - 1];
+			}
+			set
+			{
+				if (value == null) throw new System.InvalidOperationException("The lastSubpath can not be set to null");
+				_subPaths[_subPaths.Count - 1] = value;
+			}
+		}
+
+		public void Rect(float x, float y, float w, float h)
+		{
+			_subPaths.Add(new RectSubpath(x, y, w, h));
+		}
+		#endregion
+
+		#region Stroking
+		protected virtual void strokeLineSegment(LineSegment segment1, LineSegment segment2, LineJoinStyle joinStyle, bool joinOnLeft)
 		{
 			//Draw Linsegment
+			if (segment1 == null) return;
 			fillConvexPolygon(segment1);
 			//Draw join
-			fillConvexPolygon(segment1.RightEndPoint, segment1.EndPoint, segment2.RightStartPoint);
+			if (segment2 == null) return;
+			Vector2 joinEndPoint = joinOnLeft ? segment1.LeftEndPoint : segment1.RightEndPoint;
+			Vector2 joinStartPoint = joinOnLeft ? segment2.LeftStartPoint : segment2.RightStartPoint;
+			switch (joinStyle)
+			{
+				case LineJoinStyle.Miter:
+					fillConvexPolygon(joinEndPoint, segment1.EndPoint, joinStartPoint);
+					break;
+				case LineJoinStyle.Bevel:
+				case LineJoinStyle.Round:
+				default:
+					throw new System.NotImplementedException();
+			}
 		}
 
 		public virtual void Stroke()
 		{
-			foreach (ISubpath subpath in _subPaths)
-			{
-				var segments = (subpath.IsClosed ? subpath.Repeat((vect, itemIndex, repeatCount) => repeatCount < 1 || itemIndex < 1) : subpath)
-					.Neighbors()
-					.Select(i=> new LineSegment(i.Item1, i.Item2, LineWidth));
-				foreach (var segmentPair in (subpath.IsClosed ? segments.Repeat((rect, itemIndex, repeatCount) => repeatCount < 1 || itemIndex < 1) : segments).Neighbors())
+			Func<Vector2, Vector2, Vector2, bool> isPointOnLeft =
+				(lineStart, lineEnd, point) =>
 				{
-					strokeLineSegment(segmentPair.Item1, segmentPair.Item2, LineJoinStyle.Miter);
-				}
-			}
-		}
+					//(Bx - Ax) * (Cy - Ay) - (By - Ay) * (Cx - Ax)
+					return (lineEnd.X - lineStart.X) * (point.Y - lineStart.Y) - (lineEnd.Y - lineStart.Y) * (point.X - lineStart.X) >= 0;
+				};
 
+			_subPaths.Apply(
+				subpath =>
+				{
+					subpath
+					.Select(i => (Vector2?)i)
+					.Neighbors()
+					.Where(i => i.Item1 != null && i.Item2 != null)
+					.Select(i => new LineSegment(i.Item1.Value, i.Item2.Value, LineWidth))
+					.Repeat((rect, itemIndex, repeatCount) => repeatCount < 1 || (subpath.IsClosed && itemIndex < 1)) //If closed we need to go one past end
+					.Neighbors()
+					.Apply(
+						segmentPair =>
+						{
+							bool pointOnLeft = true;
+							if (segmentPair.Item1 != null && segmentPair.Item2 != null)
+								pointOnLeft = isPointOnLeft(segmentPair.Item1.StartPoint, segmentPair.Item1.EndPoint, segmentPair.Item2.EndPoint);
+							strokeLineSegment(segmentPair.Item1, segmentPair.Item2, LineJoinStyle.Miter,pointOnLeft);
+						});
+				});
+		}
+		#endregion
+
+		#region Filling
 		public virtual void Fill()
 		{
+			throw new System.NotImplementedException();
 		}
-
 		protected abstract void fillConvexPolygon(IEnumerable<Vector2> points);
 		protected void fillConvexPolygon(params Vector2[] points)
 		{
 			fillConvexPolygon((IEnumerable<Vector2>)points);
 		}
 		protected IList<ISubpath> _subPaths = new List<ISubpath>();
+		#endregion
 	}
 
 	public enum LineCapStyle

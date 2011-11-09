@@ -25,6 +25,7 @@ namespace JollyBit.Canvas
 			return vect.Xy;
 		}
 
+		[System.Diagnostics.DebuggerStepThrough]
 		public static void Apply<T>(this IEnumerable<T> source, Action<T> func)
 		{
 			foreach (var item in source)
@@ -43,23 +44,31 @@ namespace JollyBit.Canvas
 			}
 		}
 
+		[System.Diagnostics.DebuggerStepThrough]
 		public static IEnumerable<Tuple<T, T>> Neighbors<T>(this IEnumerable<T> source)
 		{
-			bool first = true;
 			T last = default(T);
 			foreach (var item in source)
 			{
-				if (!first) yield return new Tuple<T, T>(last, item);
-				first = false;
+				 yield return new Tuple<T, T>(last, item);
 				last = item;
 			}
+			yield return new Tuple<T, T>(last, default(T));
 		}
 
+		public static IEnumerable<T> Join<T>(this IEnumerable<T> source1, IEnumerable<T> source2)
+		{
+			foreach (var item in source1) yield return item;
+			foreach (var item in source2) yield return item;
+		}
+
+		[System.Diagnostics.DebuggerStepThrough]
 		public static IEnumerable<T> Repeat<T>(this IEnumerable<T> source, Func<T, bool> funcContinue)
 		{
 			return Repeat(source, (t, itemIndex, repeatCount) => funcContinue(t));
 		}
 
+		[System.Diagnostics.DebuggerStepThrough]
 		public static IEnumerable<T> Repeat<T>(this IEnumerable<T> source, Func<T, int, int, bool> funcContinue)
 		{
 			IEnumerator<T> enumerator = source.GetEnumerator();

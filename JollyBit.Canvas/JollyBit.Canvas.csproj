@@ -45,8 +45,9 @@
     <Compile Include="Misc\Tuples.cs" />
     <Compile Include="OpenTKExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shapes\ComplexSubpath.cs" />
     <Compile Include="Shapes\LineSegment.cs" />
-    <Compile Include="Shapes\Rect.cs" />
+    <Compile Include="Shapes\RectSubpath.cs" />
     <Compile Include="Subpaths.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
