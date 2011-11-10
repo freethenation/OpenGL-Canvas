@@ -8,7 +8,7 @@ namespace JollyBit.Canvas.Shapes
 {
 	public class ComplexSubpath : ISubpath
 	{
-		private IList<Vector2> _vectors = new List<Vector2>();
+		private List<Vector2> _vectors = new List<Vector2>();
 		public ComplexSubpath(Vector2 startPoint)
 		{
 			_vectors.Add(startPoint);
@@ -24,6 +24,11 @@ namespace JollyBit.Canvas.Shapes
 			_vectors.Add(point);
 		}
 
+		public void QuadraticCurveTo(Vector2 controlPoint, Vector2 anchorPoint2, float flatness)
+		{
+			_vectors.AddRange(BezierCurvesHelper.CreateQuadraticBezierCurve(lastVector, anchorPoint2, controlPoint, flatness));
+		}
+
 		public void ClosePath()
 		{
 			if (!IsClosed) LineTo(_vectors[0]);
@@ -32,7 +37,12 @@ namespace JollyBit.Canvas.Shapes
 
 		public bool IsClosed
 		{
-			get { return _vectors.Count > 1 && _vectors[0] == _vectors[_vectors.Count - 1]; }
+			get { return _vectors.Count > 1 && _vectors[0] == lastVector; }
+		}
+
+		private Vector2 lastVector
+		{
+			get { return _vectors[_vectors.Count - 1]; }
 		}
 
 		public IEnumerator<OpenTK.Vector2> GetEnumerator()

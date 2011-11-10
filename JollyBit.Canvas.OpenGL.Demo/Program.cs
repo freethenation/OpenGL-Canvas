@@ -117,6 +117,9 @@ namespace JollyBit.Canvas.OpenGL.Demo
 			//Test 2
 			canvas.MoveTo(200, 200);
 			canvas.LineTo(250, 250);
+			canvas.QuadraticCurveTo(300, 50, 100, 200);
+
+			canvas.MoveTo(250, 250);
 			canvas.LineTo(100, 200);
 			canvas.Stroke();
 			canvas.EndBatch();

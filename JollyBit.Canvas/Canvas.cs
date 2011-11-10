@@ -14,6 +14,7 @@ namespace JollyBit.Canvas
 		{
 			//Misc
 			InBatch = false;
+			CurveSmoothness = 0.5f;
 			//Lines
 			LineWidth = 1.0f;
 			LineCap = LineCapStyle.Butt;
@@ -120,6 +121,12 @@ namespace JollyBit.Canvas
 			if (subpath == null) return;
 			subpath.LineTo(new Vector2(x, y).ApplyTransform(ref _tranMatrix));		
 		}
+		public void QuadraticCurveTo(float cpx, float cpy, float x, float y)
+		{
+			ComplexSubpath subpath = ensureComplexSubpath(x, y);
+			if (subpath == null) return;
+			subpath.QuadraticCurveTo(new Vector2(cpx, cpy).ApplyTransform(ref _tranMatrix), new Vector2(x, y).ApplyTransform(ref _tranMatrix), CurveSmoothness);
+		}
 		protected ISubpath lastSubpath
 		{
 			get
@@ -138,6 +145,11 @@ namespace JollyBit.Canvas
 		{
 			_subPaths.Add(new RectSubpath(x, y, w, h));
 		}
+
+		/// <summary>
+		/// Sets how accurately curves should be drawn. The default value is 0.5 which is smoother than the display device can display.
+		/// </summary>
+		public float CurveSmoothness { get; set; }
 		#endregion
 
 		#region Stroking
@@ -164,13 +176,6 @@ namespace JollyBit.Canvas
 
 		public virtual void Stroke()
 		{
-			Func<Vector2, Vector2, Vector2, bool> isPointOnLeft =
-				(lineStart, lineEnd, point) =>
-				{
-					//(Bx - Ax) * (Cy - Ay) - (By - Ay) * (Cx - Ax)
-					return (lineEnd.X - lineStart.X) * (point.Y - lineStart.Y) - (lineEnd.Y - lineStart.Y) * (point.X - lineStart.X) >= 0;
-				};
-
 			_subPaths.Apply(
 				subpath =>
 				{
@@ -186,7 +191,7 @@ namespace JollyBit.Canvas
 						{
 							bool pointOnLeft = true;
 							if (segmentPair.Item1 != null && segmentPair.Item2 != null)
-								pointOnLeft = isPointOnLeft(segmentPair.Item1.StartPoint, segmentPair.Item1.EndPoint, segmentPair.Item2.EndPoint);
+								pointOnLeft = BezierCurvesHelper.CalcWhatSideOfLinePointIsOn(segmentPair.Item1.StartPoint, segmentPair.Item1.EndPoint, segmentPair.Item2.EndPoint) > 0;
 							strokeLineSegment(segmentPair.Item1, segmentPair.Item2, LineJoinStyle.Miter,pointOnLeft);
 						});
 				});
@@ -227,7 +232,7 @@ namespace JollyBit.Canvas
 	{
 		Bevel,
 		Round,
-		Miter
+		Miter,
 	}
 
 	public enum CompositeOperations
