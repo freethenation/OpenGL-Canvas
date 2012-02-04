@@ -94,8 +94,8 @@ namespace JollyBit.Canvas
 		}
 		public void ClosePath() // Untested
 		{
-			if(lastSubpath != null && lastSubpath is ComplexPath)
-				(lastSubpath as ComplexPath).ClosePath();
+			if(lastSubpath != null && lastSubpath is ComplexSubpath)
+				(lastSubpath as ComplexSubpath).ClosePath();
 		}
 		public void MoveTo(float x, float y)
 		{
@@ -192,6 +192,32 @@ namespace JollyBit.Canvas
 		}
 		#endregion
 		
+		#region Text
+		public String Font { get; set; }
+        public TextAlign textAlign { get; set; }
+		public TextBaseline TextBaseline { get; set; } // "top", "hanging", "middle", "alphabetic", "ideographic", "bottom" (default: "alphabetic")
+		public void FillText(string text, double x, double y, double maxWidth)
+		{
+			throw new System.NotImplementedException();
+		}
+		public void FillText(string text, double x, double y)
+		{
+			throw new System.NotImplementedException();
+		}
+		public void StrokeText(string text, double x, double y, double maxWidth)
+		{
+			throw new System.NotImplementedException();
+		}
+		public void StrokeText(string text, double x, double y)
+		{	
+			throw new System.NotImplementedException();
+		}
+		public ITextMetrics MeasureText(string text)
+		{
+			throw new System.NotImplementedException();
+		}
+		#endregion
+
 		#region Stroking
 		protected virtual void strokeLineSegment(LineSegment segment1, LineSegment segment2, LineJoinStyle joinStyle, bool joinOnLeft)
 		{
@@ -290,12 +316,35 @@ namespace JollyBit.Canvas
 		#endregion
 	}
 
+	public interface ITextMetrics 
+	{
+		float Width { get; }
+	};
+
 	public interface IImageData 
 	{
 		ulong Width { get; }
 		ulong Height { get; }
 		byte[] Data { get; }
 	};
+
+	public enum TextBaseline
+	{
+		Top,
+		Middle,
+		Alphabetic,
+		Ideographic,
+		Bottom
+	}
+
+	public enum TextAlign
+	{
+		Start,
+		End,
+		Left,
+		Right,
+		Center
+	}
 
 	public enum LineCapStyle
 	{
