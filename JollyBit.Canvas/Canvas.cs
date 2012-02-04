@@ -21,7 +21,7 @@ namespace JollyBit.Canvas
 			LineJoin = LineJoinStyle.Miter;
 			MiterLimit = 10.0f;
 		}
-
+		
 		#region  Transformations
 		private Matrix4 _tranMatrix = Matrix4.Identity;
 		public void Scale(float x, float y)
@@ -92,12 +92,55 @@ namespace JollyBit.Canvas
 		{
 			_subPaths.Clear();
 		}
+		public void ClosePath() // Untested
+		{
+			if(lastSubpath != null && lastSubpath is ComplexPath)
+				(lastSubpath as ComplexPath).ClosePath();
+		}
 		public void MoveTo(float x, float y)
 		{
 			ComplexSubpath subpath = new ComplexSubpath(new Vector2(x, y).ApplyTransform(ref _tranMatrix));
 			_subPaths.Add(subpath);
 		}
-
+		
+		public void LineTo(float x, float y)
+		{
+			ComplexSubpath subpath = ensureComplexSubpath(x, y);
+			if (subpath == null) return;
+			subpath.LineTo(new Vector2(x, y).ApplyTransform(ref _tranMatrix));		
+		}
+		public void QuadraticCurveTo(float cpx, float cpy, float x, float y)
+		{
+			ComplexSubpath subpath = ensureComplexSubpath(x, y);
+			if (subpath == null) return;
+			subpath.QuadraticCurveTo(new Vector2(cpx, cpy).ApplyTransform(ref _tranMatrix), new Vector2(x, y).ApplyTransform(ref _tranMatrix), CurveSmoothness);
+		}
+		public void BezierCurveTo(float cp1x, float cp1y, float cp2x, float cp2y, float x, float y)
+		{
+			throw new System.NotImplementedException();
+		}
+		public void ArcTo(float x1, float y1, float x2, float y2, float radius)
+		{
+			throw new System.NotImplementedException();
+		}
+		public void Rect(float x, float y, float w, float h)
+		{
+			_subPaths.Add(new RectSubpath(x, y, w, h));
+		}
+		public void Arc(float x, float y, float radius, float startAngle, float endAngle, bool anticlockwise)
+		{
+			throw new System.NotImplementedException();
+		}
+		public void Arc(float x, float y, float radius, float startAngle, float endAngle)
+		{
+			Arc(x,y,radius,startAngle,endAngle,false);
+		}
+		/// <summary>
+		/// Sets how accurately curves should be drawn. The default value is 0.5 which is smoother than the display device can display.
+		/// </summary>
+		public float CurveSmoothness { get; set; }
+		
+		#region Internal
 		/// <summary>
 		/// Ensures their is a subpath and returns the subpath if found. If the subpath is not found a new subpath is added to _subpaths and null is returned.
 		/// Consult http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#ensure-there-is-a-subpath for more info.
@@ -115,18 +158,7 @@ namespace JollyBit.Canvas
 			}
 			return lastSubpath as ComplexSubpath;
 		}
-		public void LineTo(float x, float y)
-		{
-			ComplexSubpath subpath = ensureComplexSubpath(x, y);
-			if (subpath == null) return;
-			subpath.LineTo(new Vector2(x, y).ApplyTransform(ref _tranMatrix));		
-		}
-		public void QuadraticCurveTo(float cpx, float cpy, float x, float y)
-		{
-			ComplexSubpath subpath = ensureComplexSubpath(x, y);
-			if (subpath == null) return;
-			subpath.QuadraticCurveTo(new Vector2(cpx, cpy).ApplyTransform(ref _tranMatrix), new Vector2(x, y).ApplyTransform(ref _tranMatrix), CurveSmoothness);
-		}
+		
 		protected ISubpath lastSubpath
 		{
 			get
@@ -140,18 +172,26 @@ namespace JollyBit.Canvas
 				_subPaths[_subPaths.Count - 1] = value;
 			}
 		}
-
-		public void Rect(float x, float y, float w, float h)
-		{
-			_subPaths.Add(new RectSubpath(x, y, w, h));
-		}
-
-		/// <summary>
-		/// Sets how accurately curves should be drawn. The default value is 0.5 which is smoother than the display device can display.
-		/// </summary>
-		public float CurveSmoothness { get; set; }
 		#endregion
-
+		#endregion
+		
+		#region Clip
+		public void clip()
+		{
+			throw new System.NotImplementedException();	
+		}
+		#endregion
+		
+		#region Misc
+		/// <summary>
+		/// Determines whether the specified point is in the current path.
+		/// </summary>
+		bool IsPointInPath(double x, double y)
+		{
+			throw new System.NotImplementedException();	
+		}
+		#endregion
+		
 		#region Stroking
 		protected virtual void strokeLineSegment(LineSegment segment1, LineSegment segment2, LineJoinStyle joinStyle, bool joinOnLeft)
 		{
