@@ -250,7 +250,52 @@ namespace JollyBit.Canvas
 		}
 		protected IList<ISubpath> _subPaths = new List<ISubpath>();
 		#endregion
+
+		#region Drawing Images
+		public void DrawImage(IImageData image, double dx, double dy) 
+		{ 
+			throw new System.NotImplementedException(); 
+		}
+		public void DrawImage(IImageData image, double dx, double dy, double dw, double dh) 
+		{ 
+			throw new System.NotImplementedException(); 
+		}
+		public void DrawImage(IImageData image, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh) 
+		{ 
+			throw new System.NotImplementedException(); 
+		}
+		#endregion
+
+		#region Pixel Manipulation
+		public IImageData CreateImageData(float sw, float sh)
+		{
+			throw new System.NotImplementedException();
+		}
+		public IImageData CreateImageData(IImageData imagedata)
+		{
+			throw new System.NotImplementedException();
+		}
+		public IImageData GetImageData(float sx, float sy, float sw, float sh)
+		{
+			throw new System.NotImplementedException();
+		}
+		public void PutImageData(IImageData imagedata, float dx, float dy)
+		{
+			throw new System.NotImplementedException();
+		}
+		public void PutImageData(IImageData imagedata, float dx, float dy, float dirtyX, float dirtyY, float dirtyWidth, float dirtyHeight)
+		{
+			throw new System.NotImplementedException();
+		}
+		#endregion
 	}
+
+	public interface IImageData 
+	{
+		ulong Width { get; }
+		ulong Height { get; }
+		byte[] Data { get; }
+	};
 
 	public enum LineCapStyle
 	{
